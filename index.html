@@ -24,15 +24,17 @@
         function generateQRCode() {
             var qrcodeContainer = document.getElementById('qrcode');
             qrcodeContainer.innerHTML = "";
-            // Ganti URL di bawah dengan link Google Form Anda
+            // Deteksi lebar layar
+            var qrSize = window.innerWidth <= 500 ? 320 : 200;
             var urlPresensi = "https://docs.google.com/forms/d/e/1FAIpQLSfDOFhkq0MFvZ4JtyEexhBs_Mdm5s7uJFH_h_1EbkC7nsIiwg/viewform?usp=dialog"; 
             new QRCode(qrcodeContainer, {
                 text: urlPresensi,
-                width: 200,
-                height: 200
+                width: qrSize,
+                height: qrSize
             });
         }
         window.onload = generateQRCode;
+        window.onresize = generateQRCode; // Tambahkan agar QR code ikut resize saat layar berubah
     </script>
 </body>
 </html>
