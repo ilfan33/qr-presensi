@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Code Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 30px; }
+        #qrcode { margin-top: 20px; }
+        input[type="text"] { width: 300px; padding: 8px; }
+        button { padding: 8px 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>PRESENSI SISWA TERLAMBAT</h2>
+        <p id="text" style="color: aliceblue;">Scan di sini!</p>
+        <div id="qrcode"></div>
+    </div>
+
+    <script>
+        function generateQRCode() {
+            var qrcodeContainer = document.getElementById('qrcode');
+            qrcodeContainer.innerHTML = "";
+            // Ganti URL di bawah dengan link Google Form Anda
+            var urlPresensi = "https://docs.google.com/forms/d/e/1FAIpQLSfDOFhkq0MFvZ4JtyEexhBs_Mdm5s7uJFH_h_1EbkC7nsIiwg/viewform?usp=dialog"; 
+            new QRCode(qrcodeContainer, {
+                text: urlPresensi,
+                width: 200,
+                height: 200
+            });
+        }
+        window.onload = generateQRCode;
+    </script>
+</body>
+</html>
+
