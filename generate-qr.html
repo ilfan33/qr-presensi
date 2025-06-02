@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate QR Siswa</title>
+    <link rel="shortcut icon" href="logogetara.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <!-- Library QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Generate QR Siswa</h2>
+        <form id="qrForm">
+            <label for="nama">Nama:</label>
+            <input type="text" id="nama" name="nama" required>
+            <label for="kelas">Kelas:</label>
+            <select id="kelas" name="kelas" required>
+                <option value="">-- Pilih Kelas --</option>
+                <option value="X RPL A">X RPL A</option>
+                <option value="X RPL B">X RPL B</option>
+                <option value="X AKL">X AKL</option>
+                <option value="XI RPL A">XI RPL A</option>
+                <option value="XI RPL B">XI RPL B</option>
+                <option value="XI AKL">XI AKL</option>
+                <option value="XII RPL A">XII RPL A</option>
+                <option value="XII RPL B">XII RPL B</option>
+                <option value="XII AKL">XII AKL</option>
+            </select>
+            <button type="submit">Buat QR</button>
+        </form>
+        <div id="qrResult" style="margin-top:24px;"></div>
+        <button id="downloadBtn" style="display:none;margin-top:12px;">Download QR</button>
+    </div>
+    <script>
+        const form = document.getElementById('qrForm');
+        const qrResult = document.getElementById('qrResult');
+        const downloadBtn = document.getElementById('downloadBtn');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            qrResult.innerHTML = "";
+            downloadBtn.style.display = "none";
+            const nama = document.getElementById('nama').value.trim();
+            const kelas = document.getElementById('kelas').value;
+            if (!nama || !kelas) return;
+            const qrData = JSON.stringify({ nama, kelas });
+            new QRCode(qrResult, {
+                text: qrData,
+                width: 220,
+                height: 220,
+                colorDark : "#000",
+                colorLight : "#fff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+            setTimeout(() => {
+                downloadBtn.style.display = "inline-block";
+            }, 500); // Tunggu QR ter-render
+        });
+
+        downloadBtn.addEventListener('click', function() {
+            const img = qrResult.querySelector('img');
+            if (img) {
+                // Buat canvas baru dengan padding
+                const padding = 24; // px
+                const size = img.width;
+                const canvas = document.createElement('canvas');
+                canvas.width = size + padding * 2;
+                canvas.height = size + padding * 2;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, padding, padding, size, size);
+
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = 'qr-siswa.png';
+                link.click();
+            } else {
+                // Jika QRCode.js menggunakan canvas
+                const oldCanvas = qrResult.querySelector('canvas');
+                if (oldCanvas) {
+                    const padding = 24;
+                    const size = oldCanvas.width;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = size + padding * 2;
+                    canvas.height = size + padding * 2;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = "#fff";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(oldCanvas, padding, padding, size, size);
+
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL("image/png");
+                    link.download = 'qr-siswa.png';
+                    link.click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

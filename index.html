@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="logogetara.png" type="image/x-icon">
+    <title>Presensi Siswa</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Presensi Siswa</h2>
+        <div id="qr-reader" class="qr-reader"></div>
+        <div id="hasil" class="hasil"></div>
+        <div id="pesan" class="pesan"></div>
+    </div>
+    <!-- Suara: beep dan error -->
+    <audio id="beep-success" src="sukses.mp3"></audio>
+    <audio id="beep-fail" src="gagal.mp3"></audio>
+    <script>
+        const FORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfiyy1mEMs7D1bcgzrDJs0c9iLssCbZQ9dDjR0W9aLriCxuSw/formResponse";
+        const ENTRY_NAMA = "entry.674701787";
+        const ENTRY_KELAS = "entry.1001816458";
+
+        let scannerPaused = false;
+
+        function playSound(success = true) {
+            const audio = document.getElementById(success ? 'beep-success' : 'beep-fail');
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play();
+            }
+        }
+
+        function clearResult() {
+            document.getElementById('hasil').innerHTML = "";
+            document.getElementById('pesan').textContent = "";
+            scannerPaused = false;
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            if (scannerPaused) return;
+            scannerPaused = true;
+
+            let data;
+            try {
+                data = JSON.parse(decodedText);
+            } catch (e) {
+                document.getElementById('pesan').textContent = "Gagal! QR tidak valid!";
+                document.getElementById('pesan').style.color = "red";
+                playSound(false);
+                setTimeout(clearResult, 3000);
+                return;
+            }
+            const waktu = new Date().toLocaleString('id-ID');
+            document.getElementById('hasil').innerHTML = `
+                <b>Nama:</b> ${data.nama}<br>
+                <b>Kelas:</b> ${data.kelas}<br>
+                <b>Waktu Presensi:</b> ${waktu}
+            `;
+
+            // Kirim ke Google Form
+            const formData = new FormData();
+            formData.append(ENTRY_NAMA, data.nama);
+            formData.append(ENTRY_KELAS, data.kelas);
+
+            fetch(FORM_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: formData
+            })
+            .then(() => {
+                document.getElementById('pesan').textContent = "Presensi berhasil!";
+                document.getElementById('pesan').style.color = "green";
+                playSound(true);
+                setTimeout(clearResult, 3000);
+            })
+            .catch(() => {
+                document.getElementById('pesan').textContent = "Gagal menyimpan presensi!";
+                document.getElementById('pesan').style.color = "red";
+                playSound(false);
+                setTimeout(clearResult, 3000);
+            });
+        }
+
+        function onScanFailure(error) {
+            // Tidak perlu aksi, biarkan scanner tetap berjalan
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            let html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader", { fps: 10, qrbox: 250 });
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        });
+    </script>
+</body>
+</html>

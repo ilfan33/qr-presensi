@@ -1,0 +1,131 @@
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f4f6fb;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Tambahkan pseudo-element untuk efek blur pada background image */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("logo.png") no-repeat center 10px;
+  background-size: 73%;
+  filter: blur(2px);
+  opacity: 1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Pastikan konten utama di atas background blur */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 420px;
+  margin: 120px auto 40px auto;
+  background: rgba(255, 255, 255, 0.55); /* transparan */
+  padding: 32px 24px 24px 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(11, 143, 127, 0.2);
+  text-align: center;
+  border-top: 8px solid #0b8f7f;
+}
+h2 {
+  margin-bottom: 24px;
+  color: #0b8f7f;
+  font-size: 1.6rem;
+  font-weight: 700;
+  /* kode untuk nambah bayangan putih di h2 */
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.9);
+  /* efek bayangan */
+}
+label {
+  display: block;
+  margin-top: 15px;
+}
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 20px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background: #0056b3;
+}
+.success {
+  color: green;
+  text-align: center;
+  margin-top: 15px;
+}
+.qr-reader {
+  margin: 0 auto 16px auto;
+  width: 100%;
+  max-width: 320px;
+  min-height: 260px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(11, 143, 127, 0.08);
+  background: #e9ecef;
+}
+.hasil {
+  margin: 16px 0;
+  font-size: 1.1rem;
+  color: #0b8f7f;
+  background: #eafaf1;
+  border-radius: 6px;
+  padding: 10px;
+  min-height: 48px;
+  border: 1px solid #0b8f7f33;
+}
+.pesan {
+  font-size: 1.1rem;
+  margin-top: 10px;
+  font-weight: 600;
+  min-height: 24px;
+  transition: color 0.2s;
+}
+#qrResult {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 220px;
+  margin-top: 24px;
+  padding: 20px; /* padding agar QR tidak menempel ke tepi */
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+@media (max-width: 600px) {
+  .container {
+    padding: 18px 4vw 16px 4vw;
+    max-width: 98vw;
+    margin-top: 90px;
+  }
+  .qr-reader {
+    max-width: 98vw;
+    min-height: 180px;
+  }
+  body {
+    background-size: 80px;
+    background-position: center 24px;
+  }
+}
